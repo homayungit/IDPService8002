@@ -32,32 +32,7 @@ pipeline {
                 bat "dotnet publish --configuration Release --output ${PUBLISH_DIR}"
             }
         }
-        
-        stage('Deploy to IIS') {
-            steps {
-                script {
-                    // Stop the IIS site (if already running)
-                    bat "iisreset /stop"
-                    
-                    // Remove existing site content (optional if needed)
-                    // bat "Remove-WebSite -Name ${IIS_SITE_NAME} -Force"
-                    
-                    // Conditional check and directory creation
-                    bat '''
-                        if exist C:\\inetpub\\wwwroot\\IDPService8002 (
-                            rmdir /S /Q C:\\inetpub\\wwwroot\\IDPService8002
-                        )
-                        mkdir C:\\inetpub\\wwwroot\\IDPService8002
-                    '''
-                    
-                    // Deploy to existing IIS site
-                    bat 'xcopy /Y /S C:\\Jenkins\\workspace\\JenkinsTestApp\\publish\\* C:\\inetpub\\wwwroot\\IDPService8002\\'
-                    
-                    // Start the IIS site
-                    bat "iisreset /start"
-                }
-            }
-        }
+        //dffdfdfd
     }
     
     post {
