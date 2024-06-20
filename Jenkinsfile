@@ -6,6 +6,12 @@ pipeline {
         MSBUILD_PATH = "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\BuildTools\\MSBuild\\Current\\Bin\\MSBuild.exe"  // Path to MSBuild
         IIS_SITE_NAME = 'IDPService8002'  // Replace with your existing IIS site name
         PUBLISH_DIR = "C:\\Jenkins\\workspace\\IDPService8002\\publish"  // Path to publish directory
+        NETWORK_PATH = "\\\\192.168.3.12\\publish_root"  // Network path
+        DEPLOY_DIR = "${NETWORK_PATH}\\IDPService8002"  // Deployment directory on the network
+        DRIVE_LETTER = "F:"
+        // Add your network credentials here
+        NETWORK_USERNAME = 'admin.homayun'
+        NETWORK_PASSWORD = 'H%M@k87!hameem'
     }
     
     stages {
@@ -32,29 +38,35 @@ pipeline {
                 bat "dotnet publish --configuration Release --output ${PUBLISH_DIR}"
             }
         }
+        
         stage('Deploy to IIS') {
             steps {
                 script {
+                    // Map the network drive with credentials
+                    bat "net use ${DRIVE_LETTER} ${NETWORK_PATH} /user:${NETWORK_USERNAME} ${NETWORK_PASSWORD} /persistent:no"
+                    
                     // Stop the IIS site (if already running)
                     bat "iisreset /stop"
                     
-                    bat '''
-                        if exist \\\\192.168.3.12\\publish_root\\IDPService8002 (
-                            rmdir /S /Q \\\\192.168.3.12\\publish_root\\IDPService8002
+                    // Clean up existing deployment directory and create new one
+                    bat """
+                        if exist ${DRIVE_LETTER}\\IDPService8002 (
+                            rmdir /S /Q ${DRIVE_LETTER}\\IDPService8002
                         )
-                        mkdir \\\\192.168.3.12\\publish_root\\IDPService8002
-                    '''
+                        mkdir ${DRIVE_LETTER}\\IDPService8002
+                    """
                     
                     // Deploy to existing IIS site
-                    //bat 'xcopy /Y /S C:\\Jenkins\\workspace\\IDPService8002\\publish\\* E:\\TUTORIALS\\DeployPath\\IDPService8002\\'
-                    bat 'xcopy /Y /S C:\\Jenkins\\workspace\\IDPService8002\\publish\\* \\\\192.168.3.12\\publish_root\\IDPService8002\\'
+                    bat "xcopy /Y /S ${PUBLISH_DIR}\\* ${DRIVE_LETTER}\\IDPService8002\\"
+                    
+                    // Unmap the network drive
+                    bat "net use ${DRIVE_LETTER} /delete"
                     
                     // Start the IIS site
                     bat "iisreset /start"
                 }
             }
         }
-
     }
     
     post {
