@@ -37,7 +37,7 @@ pipeline {
             steps {
                 script {
                     // Stop the IIS site (if already running)
-                    bat "iisreset /stop"
+                    //bat "iisreset /stop"
 
                     // Disconnect the drive if it is already in use
                     bat "net use ${DRIVE_LETTER} /delete /y"
@@ -62,7 +62,7 @@ pipeline {
                     bat "net use ${DRIVE_LETTER} /delete /y"
 
                     // Start the IIS site
-                    bat "iisreset /start"
+                    //bat "iisreset /start"
                 }
             }
         }
