@@ -9,9 +9,6 @@ pipeline {
         NETWORK_PATH = "\\\\192.168.3.12\\publish_root"  // Network path
         DEPLOY_DIR = "${NETWORK_PATH}\\IDPService8002"  // Deployment directory on the network
         DRIVE_LETTER = "F:"
-        // Add your network credentials here
-        NETWORK_USERNAME = 'admin.homayun'
-        NETWORK_PASSWORD = 'H%M@k87!hameem'
     }
     
     stages {
@@ -42,11 +39,11 @@ pipeline {
         stage('Deploy to IIS') {
             steps {
                 script {
-                    // Map the network drive with credentials
-                    bat "net use ${DRIVE_LETTER} ${NETWORK_PATH} /user:${NETWORK_USERNAME} ${NETWORK_PASSWORD} /persistent:no"
-                    
                     // Stop the IIS site (if already running)
                     bat "iisreset /stop"
+
+                    // Map the network drive with credentials
+                    bat "net use ${DRIVE_LETTER} ${NETWORK_PATH} /user:%NETWORK_USERNAME% %NETWORK_PASSWORD% /persistent:no"
                     
                     // Clean up existing deployment directory and create new one
                     bat """
