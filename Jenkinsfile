@@ -39,10 +39,10 @@ pipeline {
                     bat "iisreset /stop"
                     
                     bat '''
-                        if exist E:\\TUTORIALS\\DeployPath\\IDPService8002 (
-                            rmdir /S /Q E:\\TUTORIALS\\DeployPath\\IDPService8002
+                        if exist \\\\192.168.3.12\\publish_root\\IDPService8002 (
+                            rmdir /S /Q \\\\192.168.3.12\\publish_root\\IDPService8002
                         )
-                        mkdir E:\\TUTORIALS\\DeployPath\\IDPService8002
+                        mkdir \\\\192.168.3.12\\publish_root\\IDPService8002
                     '''
                     
                     // Deploy to existing IIS site
