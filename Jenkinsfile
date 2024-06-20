@@ -46,7 +46,8 @@ pipeline {
                     '''
                     
                     // Deploy to existing IIS site
-                    bat 'xcopy /Y /S C:\\Jenkins\\workspace\\IDPService8002\\publish\\* E:\\TUTORIALS\\DeployPath\\IDPService8002\\'
+                    //bat 'xcopy /Y /S C:\\Jenkins\\workspace\\IDPService8002\\publish\\* E:\\TUTORIALS\\DeployPath\\IDPService8002\\'
+                    bat 'xcopy /Y /S C:\\Jenkins\\workspace\\IDPService8002\\publish\\* \\\\192.168.3.12\\publish_root\\IDPService8002\\'
                     
                     // Start the IIS site
                     bat "iisreset /start"
