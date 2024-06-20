@@ -29,7 +29,8 @@ pipeline {
 
         stage('Publish') {
             steps {
-                bat "dotnet publish --configuration Release --output ${PUBLISH_DIR}"
+                // Publish the individual project instead of the solution
+                bat "dotnet publish AuthAPI/AuthAPI.csproj --configuration Release --output ${PUBLISH_DIR}"
             }
         }
 
@@ -37,10 +38,14 @@ pipeline {
             steps {
                 script {
                     // Stop the IIS site (if already running)
-                    //bat "iisreset /stop"
+                    // bat "iisreset /stop"
 
                     // Disconnect the drive if it is already in use
-                    bat "net use ${DRIVE_LETTER} /delete /y"
+                    bat """
+                        if exist ${DRIVE_LETTER}: (
+                            net use ${DRIVE_LETTER} /delete /y
+                        )
+                    """
 
                     // Map network drive
                     bat """
@@ -62,7 +67,7 @@ pipeline {
                     bat "net use ${DRIVE_LETTER} /delete /y"
 
                     // Start the IIS site
-                    //bat "iisreset /start"
+                    // bat "iisreset /start"
                 }
             }
         }
