@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOTNET_VERSION = '8.0'  // Adjust this to match your .NET Core SDK version
         PUBLISH_DIR = "C:\\Jenkins\\workspace\\IDPService8002\\publish"  // Path to publish directory
-        NETWORK_PATH = "\\\\192.168.3.12\\publish_root"  // Network path \\192.168.3.12\publish_root\IDPService8002
+        NETWORK_PATH = "\\\\192.168.3.12\\publish_root"  // Network path
         DRIVE_LETTER = "F:"
     }
 
@@ -29,7 +29,8 @@ pipeline {
 
         stage('Publish') {
             steps {
-                bat "dotnet publish --configuration Release --output ${PUBLISH_DIR}"
+                // Publish the individual project instead of the solution
+                bat "dotnet publish AuthAPI/AuthAPI.csproj --configuration Release --output ${PUBLISH_DIR}"
             }
         }
 
@@ -37,32 +38,31 @@ pipeline {
             steps {
                 script {
                     // Stop the IIS site (if already running)
-                    bat "iisreset /stop"
+                    // bat "iisreset /stop"
 
                     // Disconnect the drive if it is already in use
-                    bat "net use ${DRIVE_LETTER} /delete /y"
-
+                   
                     // Map network drive
                     bat """
-                        net use ${DRIVE_LETTER} ${NETWORK_PATH} /user:admin.homayun H%M@k87!hameem
+                        net use ${NETWORK_PATH} /user:admin.homayun H%M@k87!hameem
                     """
 
                     // Conditional check and directory creation
                     bat """
-                        if exist ${DRIVE_LETTER}\\IDPService8002 (
-                            rmdir /S /Q ${DRIVE_LETTER}\\IDPService8002
+                        if exist \\\\192.168.3.12\\publish_root\\IDPService8002 (
+                            rmdir /S /Q \\\\192.168.3.12\\publish_root\\IDPService8002
                         )
-                        mkdir ${DRIVE_LETTER}\\IDPService8002
+                        mkdir \\\\192.168.3.12\\publish_root\\IDPService8002
                     """
 
                     // Deploy to existing IIS site
-                    bat "xcopy /Y /S ${PUBLISH_DIR}\\* ${DRIVE_LETTER}\\IDPService8002\\"
+                    bat "xcopy /Y /S ${PUBLISH_DIR}\\* \\\\192.168.3.12\\publish_root\\IDPService8002\\"
 
                     // Unmap network drive
-                    bat "net use ${DRIVE_LETTER} /delete /y"
+                    //bat "net use ${DRIVE_LETTER} /delete /y"
 
                     // Start the IIS site
-                    bat "iisreset /start"
+                    // bat "iisreset /start"
                 }
             }
         }
