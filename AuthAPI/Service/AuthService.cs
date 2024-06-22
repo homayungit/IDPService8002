@@ -79,6 +79,7 @@ namespace AuthAPI.Service
                 Email = registrationRequestDto.Email,
                 NormalizedEmail = registrationRequestDto.Email.ToUpper(),
                 Name = registrationRequestDto.Name,
+                EmpCode = registrationRequestDto.EmpCode,
                 PhoneNumber = registrationRequestDto.PhoneNumber
             };
 
