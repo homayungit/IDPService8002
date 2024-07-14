@@ -81,7 +81,12 @@ namespace AuthAPI.Service
                 NormalizedEmail = registrationRequestDto.Email.ToUpper(),
                 Name = registrationRequestDto.Name,
                 EmpCode = registrationRequestDto.EmpCode,
-                PhoneNumber = registrationRequestDto.PhoneNumber
+                PhoneNumber = registrationRequestDto.PhoneNumber,
+                CreatedBy= registrationRequestDto.CreatedBy,
+                CreatedTime = DateTime.Now,
+                //UpdatedBy = registrationRequestDto.CreatedBy,
+              //  UpdatedTime = DateTime.Now
+
             };
 
             try
