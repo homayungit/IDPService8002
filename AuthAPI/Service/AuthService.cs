@@ -73,10 +73,11 @@ namespace AuthAPI.Service
 
         public async Task<string> Register(RegistrationRequestDto registrationRequestDto)
         {
+
             ApplicationUser user = new()
             {
-                UserName = registrationRequestDto.Email,
-                Email = registrationRequestDto.Email,
+                UserName = registrationRequestDto.Email??"NOEMAIL@noemail.com",
+                Email = registrationRequestDto.Email ?? "NOEMAIL@noemail.com",
                 NormalizedEmail = registrationRequestDto.Email.ToUpper(),
                 Name = registrationRequestDto.Name,
                 EmpCode = registrationRequestDto.EmpCode,
